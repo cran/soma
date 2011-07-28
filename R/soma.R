@@ -41,8 +41,6 @@ soma <- function (costFunction, bounds, options = list(), strategy = "all2one", 
         separationOfExtremes <- max(costFunctionValues) - leaderValue
         sumOfExtremes <- max(costFunctionValues) + leaderValue
         
-        leaderCostHistory <- c(leaderCostHistory, leaderValue)
-        
         # Check termination criteria
         if (migrationCount == options$nMigrations)
         {
@@ -60,6 +58,8 @@ soma <- function (costFunction, bounds, options = list(), strategy = "all2one", 
             report(OL$Info, "Relative cost separation (", signif(separationOfExtremes/sumOfExtremes,3), ") is below threshold (", signif(options$minRelativeSep,3), ") - stopping")
             break
         }
+        
+        leaderCostHistory <- c(leaderCostHistory, leaderValue)
         
         # Find the migration direction for each individual
         directionsFromLeader <- apply(population, 2, "-", population[,leaderIndex])
@@ -97,4 +97,9 @@ soma <- function (costFunction, bounds, options = list(), strategy = "all2one", 
     class(returnValue) <- "soma"
     
     return (returnValue)
+}
+
+plot.soma <- function (x, y = NULL, ...)
+{
+    plot(seq_along(x$history), x$history, xlab="Migration number", ylab="Leader cost value", type="b", ...)
 }
